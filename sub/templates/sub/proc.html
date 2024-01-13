@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block extra_head %}
+<style>
+    /* Add custom styles if needed */
+    .detect-language {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+{% endblock extra_head %}
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h2 class="text-center mb-4">Let's give this video a subtitle</h2>
+            <form id="transcribe-form" method="post" enctype="multipart/form-data" action="{% url 'proc-view' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_input_video">Input Video</label>
+                    <select class="form-control" id="id_input_video" name="input_video">
+                        <!-- Replace the following with your actual language options -->
+                        {% for video in videos %}
+                        <option value="{{video.obj_key}}">{{video.obj_key}}</option>
+                        {% endfor %}
+                    </select>
+                </div>            
+                <!-- Input Language -->
+                <div class="mb-3">
+                    <label for="id_input_language">Input Language</label>
+                    <select class="form-control" id="id_input_language" name="input_language">
+                        {% for lang in languages %}
+                        <option value="{{lang.code}}">{{lang.name}}({{lang.code}})</option>
+                        {% endfor %}
+                        <option value="detect_language" class="text-danger fw-bold">Detect Language</option>
+                    </select>
+                </div>  
+
+                <div class="mb-3">
+                    <label for="id_redacted_content">Redact Content (PII and toxicity) ?</label>  
+                    <select class="form-control" id="id_redacted_content" name="redacted">
+                        <option value="not_redacted">Do Not Redact</option>
+                        <option value="redacted">Redact Content</option>
+                    </select> 
+                </div>
+              
+                        
+                <!-- Submit Button -->
+                <button id="submitJob" type="submit" class="btn btn-success">Transcribe</button>
+            </form>
+
+    </div>
+</div>
+<div class="col text-end">
+    <a href="{% url 'result-view' %}" class="text-end btn btn-warning">Back To Subtitle Jobs</a>
+</div>
+
+
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-md-12 bg-light text-end">
+            <button type="button" class="btn btn-primary">Cancel</button>
+            <button type="button" class="btn btn-warning ml-2">Save</button>
+        </div>
+    </div>
+</div> -->
+
+<div class="d-flex justify-content-center">
+    <!-- Bootstrap spinner -->
+    <div id="loadingSpinner" class="spinner-border align-right" role="status" style="display: none;">
+        <span class="visually-hidden">Transcribing... Please check your Job List to check success or failure of operatation</span>
+    </div>
+</div>
+
+<p class="text-center text-white" id="p-wait"></p>
+
+<script>
+    // apply red font styling in detect_language 
+    document.addEventListener('DOMContentLoaded',function(){
+        const selectElement = document.getElementById('id_input_language')
+        const transcribeForm = document.getElementById('transcribe-form')
+        
+
+    selectElement.addEventListener('change',applyStyling)
+    transcribeForm.addEventListener('submit',spinnerLoading)
+    
+
+    })
+
+    function spinnerLoading() {
+        const pwait = document.getElementById('p-wait')
+        const submitButton = document.getElementById('submitJob')
+        const spinner = document.getElementById('loadingSpinner')
+        spinner.style.display = 'inline-block'
+        submitButton.disabled = true
+        pwait.innerHTML = 'Wait for several minutes, duration of video affects the duration of job. Check the result in your result page later'
+    }
+
+    function applyStyling() {
+            var selectElement = document.getElementById('id_input_language');
+            var options = selectElement.options;
+
+            // Remove styling from all options
+            for (var i = 0; i < options.length; i++) {
+                options[i].classList.remove('text-danger', 'fw-bold');
+            }
+
+            // Apply styling to the selected option
+            var selectedValue = selectElement.value;
+            if (selectedValue === 'detect_language') {
+                // document.querySelector('option.detect-language').classList.add('text-danger', 'fw-bold');
+                selectElement.classList.add('text-danger','fw-bold')
+            }
+        }
+    
+</script>
+{% endblock %}

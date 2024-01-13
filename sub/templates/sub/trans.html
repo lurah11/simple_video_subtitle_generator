@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block extra_head %}
+<style>
+    /* Add custom styles if needed */
+    .detect-language {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+{% endblock extra_head %}
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h2 class="text-center mb-4">Let's Translate This Subtitle </h2>
+        <h5 class="text-center mb-4 text-white">Item Name : {{transcrib_obj.uri}}</h5>
+            <form method="post" id="submitTranslateForm" enctype="multipart/form-data" action="{% url 'translate-proc-view' transcrib_obj.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                </div>            
+                <div class="mb-3">
+                    <label for="id_target_language">Translate To</label>
+                    <select class="form-control" id="id_target_language" name="target_lang">
+                        {% for lang in languages %}
+                        <option value="{{lang.code}}">{{lang.name}}({{lang.code}})</option>
+                        {% endfor %}
+                    </select>
+                </div>          
+
+                <button id="submitJob" type="submit" class="btn btn-dark">Submit</button>
+            </form>
+
+    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <!-- Bootstrap spinner -->
+    <div id="loadingSpinner" class="spinner-border text-white" role="status" style="display: none;">
+        <span class="visually-hidden"></span>
+    </div>
+</div>
+
+<div class="col text-end">
+    <a href="{% url 'result-translate-view' transcrib_obj.id %}" class="text-end btn btn-warning">Back</a>
+</div>
+
+<p class="text-center text-white" id="p-wait"></p>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+     
+        const translateForm = document.getElementById('submitTranslateForm')
+    
+        translateForm.addEventListener('submit',spinnerLoading)
+})
+
+function spinnerLoading() {
+        const pwait = document.getElementById('p-wait')
+        const submitButton = document.getElementById('submitJob')
+        const spinner = document.getElementById('loadingSpinner')
+        spinner.style.display = 'inline-block'
+        submitButton.disabled = true
+        pwait.innerHTML = 'Wait for several minutes, length of text affect the duration of job. Check the result in your result page later'
+    }
+</script>
+{% endblock %}

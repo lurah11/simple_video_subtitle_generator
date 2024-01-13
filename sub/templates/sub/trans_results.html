@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Translation Results</h3>
+<h4>Item name = {{transcribe_obj.uri}}</h4>
+<a href="{% url 'translate-proc-view' transcribe_obj.id %}" class="btn btn-success">New Translation Job</a>
+<div class="container mt-5">
+    <table class="table table-dark text-white">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Translate Result</th>
+                <th scope="col">Original Language</th>
+                <th scope="col">Target Language</th>
+                <th scope="col">Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in translate_objs%}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{result.uri}}</td>
+                <td>{{transcribe_obj.language.name}}</td>
+                <td>{{result.target_lang.name}}</td>
+                <td><a href="{% url 'download-translate-view' result.id %}" class="text-white">Download</a></td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+<div class="col text-end">
+    <a href="{% url 'result-view' %}" class="text-end btn btn-warning">Back To Subtitle Jobs</a>
+</div>
+{% endblock %}

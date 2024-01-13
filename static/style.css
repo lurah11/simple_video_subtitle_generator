@@ -1,0 +1,20 @@
+.custom-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: #3498db;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.button-text {
+  font-size: 16px;
+}

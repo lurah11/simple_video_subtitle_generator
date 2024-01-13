@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h2 class="text-center mb-4">Upload Video</h2>
+        <form id="uploadForm"  method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="videoFile" class="form-label">Choose a Video File</label>
+                <input type="file" class="form-control" id="videoFile" name="uploadedFile" accept="video/*" required>
+            </div>
+            <button id="uploadButton" type="submit" class="btn btn-success w-100">Upload</button>
+        </form>
+
+</div>
+<a class="btn btn-info" href="{% url 'result-view' %}">Go To Subtitle Job List</a>
+<div class="d-flex justify-content-center">
+    <!-- Bootstrap spinner -->
+    <div id="loadingSpinner" class="spinner-border text-white" role="status" style="display: none;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+<script>
+   const videoFile = document.getElementById('videoFile');
+   const uploadButton = document.getElementById('uploadButton');
+
+function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('uploadedFile', videoFile.files[0]);
+    const csrfToken = '{{csrf_token}}'
+
+    const apiUrl = '{% url 'upload-view' %}';
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+
+    loadingSpinner.style.display = 'inline-block';
+    uploadButton.disabled = true;
+
+    fetch(apiUrl, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        const msg = data['status']
+        alert(msg)
+    })
+    .catch(error => {
+        alert(error)
+        console.error('Error:', error);
+    }).finally(() => {
+            loadingSpinner.style.display = 'none';
+            uploadButton.disabled = false;
+    });
+}
+
+uploadForm.addEventListener('submit', handleSubmit);
+    
+</script>
+{% endblock %}

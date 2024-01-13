@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="welcome-container">
+        <h2>Welcome to Simple Video Subtitle Generator</h2>
+        {% if user.is_authenticated %}
+        <p>Hi {{user.username}} </p>
+        
+        <h3>MENU:</h3>
+        <div class="d-flex">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Upload a Video</h5>
+                  <p class="card-text">You need to upload a video first before starting any subtitling jobs. Ensure that the video is in .mp4 format </p>
+                  <a href="{% url 'upload-view' %}" class="btn btn-success">Go</a>
+                </div>
+            </div>
+    
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Subtitle Job List </h5>
+                  <p class="card-text">You can check the result of subtitling jobs here, it will also linked to any translation jobs using these subtitles</p>
+                  <a href="{% url 'result-view' %}" class="btn btn-success">Go</a>
+                </div>
+              </div>
+            
+        </div>
+        
+        
+
+
+
+
+
+        {% else %}
+        <a class="btn btn-dark" href="{% url 'account_login' %}">Login with Email</a>
+        
+        <button class="btn custom-button">
+            <img src="{% static 'google-logo.png' %}" alt="Image Alt Text" class="button-icon">
+            <span class="button-text"><a href="{% provider_login_url 'google' %}">Login with Google</a></span>
+        </button>
+
+        
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
