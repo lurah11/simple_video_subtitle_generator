@@ -1,0 +1,1 @@
+Simple Web Application that can be use to automatically generate subtitle for uploaded video. This web app using Amazon transcribe and translate service, therefore, you need to create all configuration needed in .env file and adjust settings.py accordingly
