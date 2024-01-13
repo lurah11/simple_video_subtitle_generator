@@ -1,0 +1,20 @@
+## comment = You need to save this file as ".env". If you are using other filename, make sure to adjust it on settings.py ( dont write this paragraph in your .env file)
+
+PG_USER=username
+PG_PORT=5432 
+PG_DB=yourdbname
+PG_HOST=localhost 
+PG_PW=yourdbpassword
+DJ_SECRET=django-insecure-p&q%7jf+axxxxxxxxxxxj4#5z@=hxl@#=tn*b@nzl)r&af)le(c_e4p85 
+DEBUG=True 
+AWS_ACCESS_KEY=yourawsaccesskey
+AWS_SECRET_ACCESS_KEY=yourawssecretacceskey
+AWS_REGION_NAME=yourregion 
+S3_INPUT_BUCKET=inputbucketname
+S3_TRANSCRIBE_OUTPUT_BUCKET=transcribeoutputbucketname
+S3_TRANSLATE_OUTPUT_BUCKET=translateoutputbucketname
+EMAIL_HOST_USER=yourname@gmail.com
+EMAIL_HOST_PASSWORD=appsecretkeyfromyouraccount-cannot use your email password
+DATA_ACCESS_ROLE=iamrole arn to access data (arn:aws:iam::xxxx)
+GOOGLE_CLIENT_ID=client id obtained from gcp oauth
+GOOGLE_CLIENT_SECRET=client secret obtained from gcp oaut 
