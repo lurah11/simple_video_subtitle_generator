@@ -2,12 +2,15 @@ from django.shortcuts import render,redirect,reverse
 from django.http import JsonResponse, HttpResponse
 from allauth.account.decorators import verified_email_required
 from .forms import UploadFileForm, SubmitTranscribeJobForm, SubmitTranslateJobForm
-from .utility import s3_upload_video,download_s3_file,s3_create_subtitle_obj_key,s3_copy_subtitle, download_s3_file_translate
+from .utility import s3_upload_video,download_s3_file,s3_create_subtitle_obj_key,s3_copy_subtitle, download_s3_file_translate, post_process_srt
 import boto3
-from .models import UploadedVideo, LangCode, TranscribeResult, TranslateResult
+from .models import UploadedVideo, LangCode, TranscribeResult, TranslateResult, Video
 from .transcribe import submit_transcription_job,get_transcribe_job
 from django.conf import settings 
 from .translate import translate_job
+import time
+from django.db.models.fields.files import FileField
+
 
 acc_key=settings.AWS_ACCESS_KEY
 region=settings.AWS_REGION_NAME
@@ -79,10 +82,16 @@ def uploadView(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid(): 
             uploaded_file = form.cleaned_data['uploadedFile']
-            try: 
-                 response=s3_upload_video(user,uploaded_file)
-            except:
-                print("error during uploading to s3")
+            video = Video.objects.create(user=user,filepath=uploaded_file) 
+            print(f"userrr---{video.user}---{video.user.id}")  
+            # max_timeout = 600
+            # while True : 
+            response=s3_upload_video(user,uploaded_file,video)
+                    # if not response : 
+                    #     time.sleep(3)
+                    #     max_timeout -= 3 
+                    # if max_timeout <= 0 : 
+                    #     break             
             if response['success']: 
                 try:
                     UploadedVideo.objects.create(user=user,bucket=response['bucket'],obj_key=response['obj_key'])
@@ -143,7 +152,8 @@ def downloadTranslateView(request,id):
     result = TranslateResult.objects.get(id=id)
     response = download_s3_file_translate(result.uri)
     text = response['Body'].read()
+    final_text = post_process_srt(text)
 
-    response = HttpResponse(text, content_type='text/plain')
-    response['Content-Disposition'] = f'attachment; filename="{result.uri}"'   
+    response = HttpResponse(final_text, content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename="translation_result.srt"'   
     return response

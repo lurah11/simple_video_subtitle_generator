@@ -29,7 +29,7 @@ def get_input_uri(uri):
     return desired_substring
 
 def get_translation_object_key(uri): 
-    bucket_name_uri = "s3://{output_translate_bucket}/"
+    bucket_name_uri = f"s3://{output_translate_bucket}/"
     output_object_key = re.sub(bucket_name_uri,'',uri)
     return output_object_key
 

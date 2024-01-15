@@ -4,3 +4,5 @@ from . import models
 admin.site.register(models.UploadedVideo)
 admin.site.register(models.TranscribeResult)
 admin.site.register(models.LangCode)
+admin.site.register(models.Video)
+admin.site.register(models.TranslateResult)
